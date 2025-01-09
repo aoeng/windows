@@ -30,9 +30,13 @@ function art {
 }
 
 function gsh {
+    param(
+        [string]$Message = "fix"
+    )
+    
     git add -A
     
-    git commit -m $args
+    git commit -m $Message
     if ($LASTEXITCODE -ne 0) {
         Write-Error "commit 失败"
         return
