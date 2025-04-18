@@ -45,7 +45,7 @@ function gsh {
     git push
 }
 
-function gm {
+function gitm {
     param(
         [Parameter(Mandatory=$true)]
         [string]$TargetBranch
@@ -69,7 +69,7 @@ function gm {
         # 合并当前分支到目标分支
         git merge $CurrentBranch
         if ($LASTEXITCODE -ne 0) {
-            Write-Error "合并当前分支 '$CurrentBranch' 到 '$TargetBranch' 失败。"
+            Write-Error "合并当前分支 '$CurrentBranch' 到 '$TargetBranch' 失败"
             return
         }
         
@@ -94,8 +94,18 @@ function gm {
 
 ## 安装Scoop
 ```PowerShell
-Set-ExecutionPolicy RemoteSigned -Scope CurrentUser # Optional: Needed to run a remote script the first time
-irm get.scoop.sh | iex
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser 
+iwr -useb https://gitee.com/glsnames/scoop-installer/raw/master/bin/install.ps1 | iex
+
+# 国内镜像
+scoop config SCOOP_REPO https://gitee.com/glsnames/scoop-installer
+
+# bucket国内镜像
+cd $env:SCOOP\buckets\Main
+git remote set-url origin https://gitee.com/scoop-bucket/main.git
+
+# 切换回官方镜像
+scoop config SCOOP_REPO https://github.com/ScoopInstaller/Scoop
 ```
 
 
@@ -159,3 +169,11 @@ scoop install zoxide
 Invoke-Expression (&{zoxide init pwsh} | Out-String)
 ```
 
+## 安装服务管理NSSM
+```bash
+scoop install nssm
+
+nssm install nginx
+nssm install php-cgi-84
+nssm set php-cgi-82 AppParameters "-b 127.0.0.1:9082"
+```
